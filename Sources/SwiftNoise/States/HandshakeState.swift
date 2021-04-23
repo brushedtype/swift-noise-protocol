@@ -56,14 +56,13 @@ public class HandshakeState {
 
   let dhFunction: DHFunction
 
-  #if DEBUG
-    public var remoteS: PublicKey? {
-      return rs
-    }
-    public var remoteE: PublicKey? {
-      return re
-    }
-  #endif
+  public var remoteS: PublicKey? {
+    return rs
+  }
+
+  public var remoteE: PublicKey? {
+    return re
+  }
 
   // Returns a public key according to the arguments:
   // - If `own` is true, returns a key from the current party. Otherwise return a key from the opposite party.
@@ -185,15 +184,18 @@ extension HandshakeState {
   // For "e": Sets e (which must be empty) to GENERATE_KEYPAIR(). Appends e.public_key to the
   // buffer. Calls MixHash(e.public_key).
   private func writeE() throws -> Data {
-    #if !DEBUG
-      if self.e != nil {
-        throw HandshakeStateError.ephemeralKeyAlreadyExist
-      }
-    #endif
-    let e = try self.e ?? self.dhFunction.generateKeyPair()
-    self.e = e
-    self.symmetricState.mixHash(data: e.publicKey)
-    return e.publicKey
+    let ePublicKey: PublicKey
+
+    if let e = self.e {
+        ePublicKey = e.publicKey
+    } else {
+        let e = try self.e ?? self.dhFunction.generateKeyPair()
+        self.e = e
+        ePublicKey = e.publicKey
+    }
+
+    self.symmetricState.mixHash(data: ePublicKey)
+    return ePublicKey
   }
 
   // For "s": Appends EncryptAndHash(s.public_key) to the buffer.

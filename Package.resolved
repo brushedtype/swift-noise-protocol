@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/apple/swift-crypto.git",
         "state": {
           "branch": null,
-          "revision": "3bea268b223651c4ab7b7b9ad62ef9b2d4143eb6",
-          "version": "1.1.6"
+          "revision": "75ec60b8b4cc0f085c3ac414f3dca5625fa3588e",
+          "version": "2.2.4"
         }
       }
     ]
